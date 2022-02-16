@@ -1,0 +1,10 @@
+{
+  "extends": "standard-with-typescript",
+  "paserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off"
+  }
+}
