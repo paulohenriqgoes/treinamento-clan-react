@@ -17,6 +17,7 @@
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^6.0.0-alpha.7",
+    "@testing-library/react": "^12.1.4",
     "@types/axios": "^0.14.0",
     "@types/faker": "^6.6.9",
     "@types/jest": "^27.4.1",
