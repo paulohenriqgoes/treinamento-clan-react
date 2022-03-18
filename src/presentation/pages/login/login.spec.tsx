@@ -18,7 +18,7 @@ type SutParams = {
   validationError: string
 }
 
-const history = createMemoryHistory()
+const history = createMemoryHistory({ initialEntries: ['/login'] })
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
@@ -114,28 +114,31 @@ describe('Login component', () => {
     expect(submitButton.disabled).toBeFalsy()
   })
 
-  test('Should show spinner on submit', () => {
+  test('Should show spinner on submit', async () => {
     const { sut } = makeSut()
     simulateValidSubmit(sut)
+    await waitFor(() => sut.getByTestId('form'))
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
 
-  test('Should call Authentication with correct values', () => {
+  test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     const email = faker.internet.email()
     const password = faker.internet.password()
     simulateValidSubmit(sut, email, password)
+    await waitFor(() => sut.getByTestId('form'))
     expect(authenticationSpy.params).toEqual({
       email,
       password
     })
   })
 
-  test('Should call Authentication only once', () => {
+  test('Should call Authentication only once', async () => {
     const { sut, authenticationSpy } = makeSut()
     simulateValidSubmit(sut)
     simulateValidSubmit(sut)
+    await waitFor(() => sut.getByTestId('form'))
     expect(authenticationSpy.callsCount).toBe(1)
   })
 
@@ -168,14 +171,17 @@ describe('Login component', () => {
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.accountModel.accessToken)
+    expect(history.index).toBe(0)
+    expect(history.location.pathname).toBe('/')
   })
 
   test('Should go to signup page', () => {
     const { sut } = makeSut()
     const signupLink = sut.getByTestId('signup')
-    expect(history.location.pathname).toBe('/')
+    expect(history.index).toBe(0)
 
     fireEvent.click(signupLink)
+    expect(history.index).toBe(1)
     expect(history.location.pathname).toBe('/signup')
   })
 })
